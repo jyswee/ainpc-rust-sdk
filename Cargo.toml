@@ -1,0 +1,24 @@
+[package]
+name = "ainpc-sdk"
+version = "0.1.0"
+edition = "2021"
+description = "AINPCEngine SDK - AI-powered NPCs with persistent memory for Rust game engines"
+license = "MIT"
+authors = ["Joe Wee <joe@tyga.cloud>"]
+repository = "https://github.com/jyswee/ainpc-rust-sdk"
+homepage = "https://ainpcengine.com"
+keywords = ["npc", "ai", "gamedev", "rpg", "dialogue"]
+categories = ["game-development", "api-bindings"]
+
+[dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
+futures-util = "0.3"
+thiserror = "2"
+url = "2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full", "test-util"] }
