@@ -33,8 +33,12 @@
 
 mod client;
 mod models;
+
+#[cfg(feature = "native")]
 mod websocket;
 
 pub use client::{AINPCClient, AINPCError, Result};
 pub use models::*;
+
+#[cfg(feature = "native")]
 pub use websocket::NPCWebSocket;
