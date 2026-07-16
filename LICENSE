@@ -1,0 +1,20 @@
+AINPCEngine Rust SDK - End User License Agreement
+
+Copyright (c) 2026 Tyga.Cloud Ltd. All rights reserved.
+
+Permission is granted to install and use this software for its intended
+purpose (building games and applications that integrate with the
+AINPCEngine platform at ainpcengine.com), including embedding it in
+games you distribute.
+
+You may NOT:
+- Redistribute, sublicense, or resell this software on a standalone basis
+- Use this software to interoperate with any service other than AINPCEngine
+- Remove or alter any copyright notices contained in this software
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+TYGA.CLOUD LTD BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
