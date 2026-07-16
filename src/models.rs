@@ -274,6 +274,25 @@ pub struct CreateNPCRequest {
     pub inventory: Option<Vec<InventoryItem>>,
 }
 
+/// Partial NPC update — only fields set to `Some` are sent.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct UpdateNPCRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personality: Option<NPCPersonality>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub faction: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inventory: Option<Vec<InventoryItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mood: Option<NPCMood>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct GenerateNPCRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -299,6 +318,44 @@ pub struct GenerateBatchResponse {
     pub npcs: Vec<NPC>,
     #[serde(rename = "socialLinks", default)]
     pub social_links: Vec<SocialLink>,
+}
+
+/// Response from `POST /api/npcs/:id/speak` (NPC voice synthesis).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpeakResponse {
+    /// Base64-encoded audio data.
+    pub audio: String,
+    /// Audio format (e.g. "wav").
+    pub format: String,
+    /// Voice used for synthesis.
+    pub voice: String,
+    /// TTS provider that produced the audio.
+    pub provider: String,
+    #[serde(rename = "npcId")]
+    pub npc_id: String,
+    #[serde(rename = "npcName")]
+    pub npc_name: String,
+    /// Number of characters synthesized (metered against the voice quota).
+    #[serde(rename = "textLength")]
+    pub text_length: i64,
+}
+
+/// Response from `GET /api/stats`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StatsResponse {
+    pub experts: Vec<ExpertInfo>,
+    #[serde(rename = "totalExperts")]
+    pub total_experts: i32,
+    #[serde(rename = "cognitiveFeatures", default)]
+    pub cognitive_features: Vec<String>,
+    pub uptime: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExpertInfo {
+    pub id: String,
+    pub name: String,
+    pub domain: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

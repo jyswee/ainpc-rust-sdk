@@ -21,7 +21,7 @@ use url::Url;
 ///     // Listen for NPC responses
 ///     tokio::spawn(async move {
 ///         while let Some(event) = rx.recv().await {
-///             println!("NPC says: {}", event.response.dialogue);
+///             println!("NPC says: {}", event.response.dialogue.unwrap_or_default());
 ///         }
 ///     });
 ///
