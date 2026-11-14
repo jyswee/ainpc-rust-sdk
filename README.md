@@ -58,14 +58,13 @@ Real terminal sessions, real dashboard — no mockups. Click any card to watch.
 - **Dynamic personalities** — traits, moods, daily schedules, secrets; NPCs stay in character
 - **Full game-event coverage** — dialogue, combat, trade, and quest events through one API
 - **AI persona generation** — generate a complete NPC (backstory, traits, speech style) from a role
-- **NPC voice (TTS)** — give any NPC a voice via the speak endpoint
 - **REST + WebSocket** — request/response or realtime streaming, your choice
 - **Agent-native** — 49 MCP tools; coding agents can create and manage NPCs end-to-end
 - **SDKs for every engine** — Unity, Unreal, Godot, Rust, Node.js, plus a CLI
 
 ## Pricing
 
-Plans from **$29/mo** with a **7-day free trial** ($0 today). [See pricing →](https://ainpcengine.com/pricing)
+Plans from **$29/mo**. [See pricing →](https://ainpcengine.com/pricing)
 
 ## Installation
 
@@ -84,7 +83,7 @@ use ainpc_sdk::{AINPCClient, GameContext};
 #[tokio::main]
 async fn main() {
     let client = AINPCClient::new(
-        "https://api.ainpcengine.com",  // API URL
+        "https://ainpcengine.com",      // API URL
         "npk_your-api-key",             // API key
         "my-rpg-game",                  // Game ID
     );
@@ -121,14 +120,8 @@ let updated = client.update_npc("npc_1", &UpdateNPCRequest {
 
 ## NPC Voice (TTS)
 
-Give your NPCs a voice — audio is synthesized with a voice matched to the
-NPC's personality. Requires a Voice add-on on your plan.
-
-```rust
-let speech = client.speak("npc_1", "Welcome to my shop, traveler!").await?;
-// speech.audio is base64-encoded audio, speech.format is e.g. "wav"
-println!("Voice: {} ({} chars)", speech.voice, speech.text_length);
-```
+Voice is not currently offered; `client.speak(npc_id, text)` returns 403
+`voice_unavailable`. The method stays in the SDK for when voice returns.
 
 ## Engine Stats
 
@@ -152,10 +145,10 @@ use ainpc_sdk::{AINPCError, error_codes};
 match client.say("npc_1", "player_1", "Hi!", Default::default()).await {
     Ok(result) => { /* ... */ }
     Err(err) if err.is_payment_required() => {
-        // 402: account not activated yet (or subscription cancelled).
-        // Add a card at the payment URL to start your 7-day free trial —
-        // $0 today, full API access immediately.
-        println!("Activate your account: {}", err.payment_url().unwrap_or_default());
+        // 402: no active subscription (signup not finished, or cancelled).
+        // Every account is on a paid plan — finish signing up or
+        // resubscribe at the payment URL.
+        println!("Finish signing up: {}", err.payment_url().unwrap_or_default());
     }
     Err(AINPCError::Api { status, code, message, payment_url }) => {
         match code.as_deref() {
@@ -180,12 +173,14 @@ match client.say("npc_1", "player_1", "Hi!", Default::default()).await {
 
 | Code | HTTP | Meaning |
 |------|------|---------|
-| `payment_required` | 402 | Add a card to start the 7-day free trial ($0 today) or resubscribe |
+| `payment_required` | 402 | No active subscription — finish signing up or resubscribe at the payment URL |
 | `npc_limit` | 402 | Plan NPC limit reached — upgrade to create more |
 | `feature_not_in_plan` | 402 | Feature not included in your plan |
 | `interaction_cap` | 429 | Monthly included interactions used — upgrade for more |
 
 ## WebSocket (Real-time)
+
+The WebSocket takes the same API key as REST and counts against the same plan limits.
 
 ```rust
 use ainpc_sdk::NPCWebSocket;
@@ -193,7 +188,7 @@ use ainpc_sdk::NPCWebSocket;
 #[tokio::main]
 async fn main() {
     let (ws, mut rx) = NPCWebSocket::connect(
-        "wss://api.ainpcengine.com/ws",
+        "wss://ainpcengine.com/ws",
         "npk_your-api-key",
         "my-game",
     ).await.unwrap();
@@ -205,7 +200,7 @@ async fn main() {
         }
     });
 
-    // Subscribe to NPC updates
+    // Subscribe to specific NPCs
     ws.subscribe(&["npc_1", "npc_2"]).await.unwrap();
 
     // Send event
@@ -239,7 +234,7 @@ async fn main() {
 | `send_batch_events(events)` | Batch multiple events |
 | `generate_npc(role, name)` | AI-generate an NPC persona |
 | `generate_batch(count, role)` | Batch generate NPCs |
-| `speak(npc_id, text)` | Synthesize NPC voice audio (Voice add-on) |
+| `speak(npc_id, text)` | Synthesize NPC voice audio. Voice is not currently offered; returns 403 `voice_unavailable` |
 | `stats()` | Engine stats: experts, features, uptime |
 
 ### WebSocket Client (`NPCWebSocket`)
@@ -248,8 +243,8 @@ async fn main() {
 |--------|-------------|
 | `connect(url, api_key, game_id)` | Connect to server (returns handle + receiver) |
 | `send_event(npc_id, event_data)` | Send real-time event |
-| `subscribe(npc_ids)` | Subscribe to NPC updates |
-| `unsubscribe(npc_ids)` | Unsubscribe from updates |
+| `subscribe(npc_ids)` | Subscribe to NPCs |
+| `unsubscribe(npc_ids)` | Unsubscribe from NPCs |
 | `disconnect()` | Close connection |
 
 ## Event Types
@@ -267,9 +262,9 @@ async fn main() {
 
 ## Getting Started with AINPCEngine
 
-Sign up at [ainpcengine.com](https://ainpcengine.com) — every plan starts
-with a 7-day free trial ($0 today). Create an API key in your Studio
-dashboard and you're ready to go.
+Sign up at [ainpcengine.com](https://ainpcengine.com) and pick a plan (the
+first month is paid at signup; there is no free trial). Create an API key in
+your Studio dashboard and you're ready to go.
 
 ## License
 

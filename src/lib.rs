@@ -9,7 +9,7 @@
 //!
 //! #[tokio::main]
 //! async fn main() {
-//!     let client = AINPCClient::new("http://localhost:16745", "your-api-key", "my-game");
+//!     let client = AINPCClient::new("https://ainpcengine.com", "your-api-key", "my-game");
 //!
 //!     // Health check
 //!     let health = client.health().await.unwrap();
@@ -27,8 +27,8 @@
 //!     match client.say("npc_1", "player_1", "Hello there!", context).await {
 //!         Ok(result) => println!("NPC says: {}", result.response.dialogue.unwrap_or_default()),
 //!         Err(err) if err.is_payment_required() => {
-//!             // Trial paywall: add a card to start the 7-day free trial ($0 today)
-//!             println!("Activate your account: {}", err.payment_url().unwrap_or_default());
+//!             // No active subscription: finish signing up or resubscribe
+//!             println!("Finish signing up: {}", err.payment_url().unwrap_or_default());
 //!         }
 //!         Err(err) => eprintln!("Error: {err}"),
 //!     }

@@ -3,9 +3,9 @@ use reqwest::Client;
 
 /// Well-known values of [`AINPCError::Api::code`].
 ///
-/// - `payment_required` (HTTP 402) — account not activated or subscription
-///   cancelled. Add a card at the `payment_url` to start the 7-day free
-///   trial ($0 today).
+/// - `payment_required` (HTTP 402) — no active subscription (signup not
+///   finished, or subscription cancelled). Finish signing up or resubscribe
+///   at the `payment_url`.
 /// - `npc_limit` (HTTP 402) — plan NPC limit reached; upgrade to create more.
 /// - `feature_not_in_plan` (HTTP 402) — feature not included in current plan.
 /// - `interaction_cap` (HTTP 429) — monthly included interactions used up.
@@ -30,8 +30,8 @@ pub enum AINPCError {
         code: Option<String>,
         /// Human-readable error message.
         message: String,
-        /// Where to add a card / upgrade. Set for `payment_required`
-        /// (trial paywall) and for plan-limit errors (upgrade URL).
+        /// Where to subscribe / upgrade. Set for `payment_required`
+        /// (no active subscription) and for plan-limit errors (upgrade URL).
         payment_url: Option<String>,
     },
 }
@@ -54,7 +54,7 @@ impl AINPCError {
         }
     }
 
-    /// URL where the studio can add a card or upgrade its plan.
+    /// URL where the studio can subscribe or upgrade its plan.
     pub fn payment_url(&self) -> Option<&str> {
         match self {
             AINPCError::Api { payment_url, .. } => payment_url.as_deref(),
@@ -62,10 +62,10 @@ impl AINPCError {
         }
     }
 
-    /// True when the account has not started its trial yet (no card on
-    /// file) or the subscription was cancelled. Direct the user to
-    /// [`AINPCError::payment_url`] — adding a card starts a 7-day free
-    /// trial ($0 today).
+    /// True when the account has no active subscription (signup not
+    /// finished, or the subscription was cancelled). Every account is on a
+    /// paid plan; direct the user to [`AINPCError::payment_url`] to finish
+    /// signing up or resubscribe.
     pub fn is_payment_required(&self) -> bool {
         self.code() == Some(error_codes::PAYMENT_REQUIRED)
     }
@@ -94,7 +94,7 @@ pub type Result<T> = std::result::Result<T, AINPCError>;
 ///
 /// #[tokio::main]
 /// async fn main() {
-///     let client = AINPCClient::new("http://localhost:16745", "your-api-key", "my-game");
+///     let client = AINPCClient::new("https://ainpcengine.com", "your-api-key", "my-game");
 ///     let health = client.health().await.unwrap();
 ///     println!("Status: {}", health.status);
 /// }
@@ -217,7 +217,7 @@ impl AINPCClient {
 
     /// Synthesize NPC speech for the given text. Returns base64-encoded
     /// audio with the voice matched to the NPC's personality.
-    /// Requires a Voice add-on on the account.
+    /// Voice is not currently offered; this returns 403 `voice_unavailable`.
     pub async fn speak(&self, npc_id: &str, text: &str) -> Result<SpeakResponse> {
         #[derive(serde::Serialize)]
         struct Body<'a> { text: &'a str }

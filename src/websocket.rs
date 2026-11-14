@@ -5,6 +5,8 @@ use tokio_tungstenite::{connect_async, tungstenite::Message};
 use url::Url;
 
 /// Real-time WebSocket client for NPC event streaming.
+/// Takes the same API key as the REST client and counts against the same
+/// plan limits.
 ///
 /// # Example
 /// ```no_run
@@ -13,7 +15,7 @@ use url::Url;
 /// #[tokio::main]
 /// async fn main() {
 ///     let (ws, mut rx) = NPCWebSocket::connect(
-///         "ws://localhost:16745/ws",
+///         "wss://ainpcengine.com/ws",
 ///         "your-api-key",
 ///         "my-game",
 ///     ).await.unwrap();
@@ -25,7 +27,7 @@ use url::Url;
 ///         }
 ///     });
 ///
-///     // Subscribe to NPC updates
+///     // Subscribe to specific NPCs
 ///     ws.subscribe(&["npc_1", "npc_2"]).await.unwrap();
 ///
 ///     // Send an event
@@ -126,7 +128,7 @@ impl NPCWebSocket {
         Ok(())
     }
 
-    /// Unsubscribe from NPC updates.
+    /// Unsubscribe from NPCs.
     pub async fn unsubscribe(
         &self,
         npc_ids: &[&str],
